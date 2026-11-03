@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.DS_Store
+
+# grant-crypto SDK fetched by bin/fetch-sdk.sh (not vendored)
+/sdk/

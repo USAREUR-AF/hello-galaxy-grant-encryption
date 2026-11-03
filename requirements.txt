@@ -1,0 +1,7 @@
+# The only dependency for the default (in-process) walkthrough on the reference.
+cryptography>=42
+# For the optional `./bin/grant-enc 03 --fabric` path only:
+#   eclipse-zenoh>=1.0
+# The production grant-crypto SDK path (bin/fetch-sdk.sh) needs NO pip packages —
+# its Python binding is stdlib-only ctypes; it needs a Rust toolchain (>= 1.77)
+# to build the C ABI cdylib. See README "Running on the production SDK".

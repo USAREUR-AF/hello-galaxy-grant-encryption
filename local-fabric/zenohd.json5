@@ -1,0 +1,22 @@
+// Minimal eclipse/zenoh 1.9 router config for the --fabric demo path.
+//
+// Plaintext tcp/7447 (a LOCAL loopback demo — NOT how the production fabric runs,
+// which is mTLS with a per-identity ACL). One in-memory storage on keys/** so a
+// late reader's get() returns the retained key bundle, mirroring the production
+// keys/** retention store. Deliberately open: the point here is the transport, not
+// the router ACL (the crypto is what enforces the read cut in this repo).
+{
+  mode: "router",
+  listen: { endpoints: ["tcp/0.0.0.0:7447"] },
+  scouting: { multicast: { enabled: false } },
+  plugins: {
+    storage_manager: {
+      storages: {
+        keys: {
+          key_expr: "keys/**",
+          volume: "memory",
+        },
+      },
+    },
+  },
+}

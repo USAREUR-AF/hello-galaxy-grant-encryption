@@ -1,0 +1,78 @@
+name: ci
+
+# The proof is CI-gated: shellcheck the harness, check the repo structure, and
+# RUN every pure-python scenario so a regression in the crypto or the apparatus
+# fails the build. The default in-process path on the readable reference is the
+# always-on gate. The production-SDK path (bin/fetch-sdk.sh builds the SDK from
+# goatcore's ops/grant-crypto/sdk) runs in its own job and adds the cross-library
+# wire check. The --fabric path (docker + eclipse-zenoh) is not run here.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: shellcheck
+        run: shellcheck -x bin/grant-enc lib/gehg.sh bin/fetch-sdk.sh
+
+  structure:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: every scenario has a run.py and a README.md
+        run: |
+          fail=0
+          for d in scenarios/*/; do
+            [ -f "$d/run.py" ]   || { echo "missing $d/run.py"; fail=1; }
+            [ -f "$d/README.md" ]|| { echo "missing $d/README.md"; fail=1; }
+          done
+          for f in README.md LICENSE lib/grant_enc.py lib/demo.py \
+                   docs/envelope-and-keys.md docs/honesty-matrix.md \
+                   docs/data-owner-controls.md docs/the-philosophy.md \
+                   report/report.html; do
+            [ -f "$f" ] || { echo "missing $f"; fail=1; }
+          done
+          for s in report/figures/*.svg; do
+            python3 -c "import xml.dom.minidom,sys; xml.dom.minidom.parse(sys.argv[1])" "$s" \
+              || { echo "malformed SVG: $s"; fail=1; }
+          done
+          exit $fail
+
+  scenarios:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography
+      - name: run the walkthrough on the reference (the always-on proof)
+        run: NO_COLOR=1 ./bin/grant-enc all
+
+  sdk:
+    # Run the same scenarios on the PRODUCTION grant-crypto SDK, built from
+    # goatcore's ops/grant-crypto/sdk, and prove wire compatibility both ways.
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: dtolnay/rust-toolchain@stable
+      - run: pip install cryptography
+      - name: fetch + build the SDK from goatcore
+        run: ./bin/fetch-sdk.sh
+      - name: run the walkthrough + cross-compat on the SDK
+        run: |
+          NO_COLOR=1 ./bin/grant-enc all | tee walkthrough.log
+          grep -q 'backend: grant-crypto SDK' walkthrough.log
+          python3 tests/cross_compat.py

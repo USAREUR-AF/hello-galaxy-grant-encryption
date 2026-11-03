@@ -1,0 +1,77 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 460" width="720" height="460" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <rect width="720" height="460" fill="#0d1117"/>
+
+  <text x="36" y="46" fill="#e6edf3" font-size="22" font-weight="600">Hybrid envelope: seal once, wrap N times</text>
+  <text x="36" y="72" fill="#9aa7b4" font-size="14">One symmetric data key protects the payload; that key is re-wrapped to each member.</text>
+
+  <!-- Layer 1: the payload sealed once -->
+  <text x="36" y="118" fill="#9aa7b4" font-size="13" font-weight="600" letter-spacing="1">LAYER 1 &#183; SEAL THE PAYLOAD ONCE</text>
+
+  <rect x="36" y="132" width="300" height="96" rx="10" fill="none" stroke="#5ec8cd" stroke-width="1.5"/>
+  <text x="52" y="160" fill="#e6edf3" font-size="14" font-weight="600">message plaintext</text>
+  <text x="52" y="182" fill="#9aa7b4" font-size="12.5">AES-256-GCM &#8722; one DEK per generation</text>
+  <text x="52" y="202" fill="#9aa7b4" font-size="12">AAD binds suite &#183; release-set &#183; gen &#183; topic</text>
+  <rect x="52" y="210" width="268" height="4" rx="2" fill="#5ec8cd" opacity="0.4"/>
+
+  <!-- DEK key glyph -->
+  <g transform="translate(392,150)">
+    <circle cx="16" cy="16" r="15" fill="none" stroke="#f5b14c" stroke-width="2"/>
+    <rect x="28" y="13" width="34" height="6" rx="1" fill="#f5b14c"/>
+    <rect x="54" y="19" width="4" height="8" fill="#f5b14c"/>
+    <rect x="46" y="19" width="4" height="8" fill="#f5b14c"/>
+  </g>
+  <text x="392" y="205" fill="#f5b14c" font-size="13" font-weight="600">DEK</text>
+  <text x="430" y="205" fill="#9aa7b4" font-size="12">the single AES-256 data key</text>
+
+  <path d="M 336 180 L 388 172" stroke="#5ec8cd" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+
+  <!-- Ciphertext output -->
+  <rect x="470" y="132" width="214" height="96" rx="10" fill="#161b22" stroke="#5ec8cd" stroke-width="1.5"/>
+  <text x="486" y="160" fill="#e6edf3" font-size="14" font-weight="600">ciphertext</text>
+  <text x="486" y="182" fill="#9aa7b4" font-size="12">published on data/&lt;rs&gt;/&lt;topic&gt;</text>
+  <g font-family="monospace" font-size="11" fill="#5ec8cd" opacity="0.7">
+    <text x="486" y="204">9f a2 c1 07 e3 8b 44 d0</text>
+    <text x="486" y="218">1c 6a ff 20 be 5d 09 71</text>
+  </g>
+  <path d="M 424 176 C 452 176, 452 176, 468 176" stroke="#5ec8cd" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+
+  <!-- Layer 2 -->
+  <text x="36" y="278" fill="#9aa7b4" font-size="13" font-weight="600" letter-spacing="1">LAYER 2 &#183; WRAP THE DEK ONCE PER MEMBER</text>
+
+  <!-- DEK source -->
+  <g transform="translate(60,308)">
+    <circle cx="14" cy="14" r="13" fill="none" stroke="#f5b14c" stroke-width="2"/>
+    <rect x="24" y="11" width="26" height="5" rx="1" fill="#f5b14c"/>
+  </g>
+  <text x="60" y="360" fill="#f5b14c" font-size="12" font-weight="600">same DEK</text>
+
+  <!-- Wrap fan-out to member slots -->
+  <g>
+    <path d="M 130 322 C 210 322, 210 330, 300 330" stroke="#5ec8cd" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+    <path d="M 130 322 C 210 322, 210 372, 300 372" stroke="#5ec8cd" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+    <path d="M 130 322 C 210 322, 210 414, 300 414" stroke="#5ec8cd" stroke-width="1.5" fill="none" marker-end="url(#ah)"/>
+  </g>
+
+  <!-- three wrapped slots -->
+  <g font-size="12.5">
+    <rect x="306" y="316" width="378" height="28" rx="6" fill="#161b22" stroke="#7ee2a8" stroke-width="1.2"/>
+    <text x="320" y="334" fill="#7ee2a8" font-weight="600">slot A</text>
+    <text x="372" y="334" fill="#9aa7b4">DEK wrapped to member A's public key (ECDH P-256 &#8594; HKDF)</text>
+
+    <rect x="306" y="358" width="378" height="28" rx="6" fill="#161b22" stroke="#7ee2a8" stroke-width="1.2"/>
+    <text x="320" y="376" fill="#7ee2a8" font-weight="600">slot B</text>
+    <text x="372" y="376" fill="#9aa7b4">DEK wrapped to member B's public key</text>
+
+    <rect x="306" y="400" width="378" height="28" rx="6" fill="#161b22" stroke="#7ee2a8" stroke-width="1.2"/>
+    <text x="320" y="418" fill="#7ee2a8" font-weight="600">slot C</text>
+    <text x="372" y="418" fill="#9aa7b4">DEK wrapped to member C's public key</text>
+  </g>
+
+  <text x="36" y="448" fill="#9aa7b4" font-size="12">The whole bundle is ECDSA P-256 signed. Only a member can unwrap its own slot back to the DEK.</text>
+
+  <defs>
+    <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#5ec8cd"/>
+    </marker>
+  </defs>
+</svg>

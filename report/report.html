@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Grant-keyed encryption — data access control that travels with the data</title>
+<style>
+  :root {
+    --bg: #0d1117;
+    --panel: #161b22;
+    --anchor: #f5b14c;
+    --ok: #7ee2a8;
+    --muted: #9aa7b4;
+    --title: #e6edf3;
+    --link: #5ec8cd;
+    --danger: #f0776b;
+    --border: #232a33;
+    --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--title);
+    font-family: var(--sans);
+    line-height: 1.62;
+    font-size: 16px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 900px; margin: 0 auto; padding: 0 24px 96px; }
+
+  /* Hero */
+  .hero {
+    padding: 88px 24px 56px;
+    background:
+      radial-gradient(1100px 420px at 20% -10%, rgba(94,200,205,0.10), transparent 60%),
+      radial-gradient(900px 380px at 90% 0%, rgba(245,177,76,0.08), transparent 55%);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero-inner { max-width: 900px; margin: 0 auto; }
+  .kicker {
+    font-size: 12.5px; letter-spacing: 2.5px; text-transform: uppercase;
+    color: var(--link); font-weight: 600; margin: 0 0 18px;
+  }
+  h1 {
+    font-size: clamp(30px, 5vw, 46px);
+    line-height: 1.12; margin: 0 0 20px; font-weight: 700; letter-spacing: -0.5px;
+    color: var(--title);
+  }
+  h1 .accent { color: var(--anchor); }
+  .thesis { font-size: clamp(16px, 2.4vw, 19px); color: var(--muted); margin: 0; max-width: 720px; }
+
+  /* Cards row */
+  .cards {
+    display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px;
+    margin: 40px auto 8px; max-width: 900px; padding: 0 24px;
+  }
+  .card {
+    background: var(--panel); border: 1px solid var(--border); border-radius: 14px;
+    padding: 20px 18px;
+  }
+  .card .num { font-size: 30px; font-weight: 700; color: var(--anchor); line-height: 1; }
+  .card .num.ok { color: var(--ok); }
+  .card .num.link { color: var(--link); }
+  .card .num.small { font-size: 20px; }
+  .card .lbl { color: var(--muted); font-size: 13px; margin-top: 10px; }
+
+  /* Sections */
+  section { margin-top: 64px; }
+  h2 {
+    font-size: 15px; letter-spacing: 1.5px; text-transform: uppercase;
+    color: var(--link); font-weight: 600; margin: 0 0 6px;
+  }
+  h2 + .lede { color: var(--title); font-size: 22px; font-weight: 600; margin: 0 0 24px; letter-spacing: -0.2px; }
+  p { color: var(--muted); }
+  p strong { color: var(--title); font-weight: 600; }
+  code { font-family: var(--mono); font-size: 0.9em; color: var(--link); background: rgba(94,200,205,0.08); padding: 1px 6px; border-radius: 5px; }
+
+  /* Figure blocks */
+  figure {
+    margin: 0 0 40px; background: var(--panel); border: 1px solid var(--border);
+    border-radius: 16px; padding: 20px; overflow: hidden;
+  }
+  .fig-scroll { overflow-x: auto; }
+  figure img, figure svg { display: block; width: 100%; height: auto; max-width: 100%; }
+  figcaption { color: var(--muted); font-size: 14px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
+  figcaption b { color: var(--title); font-weight: 600; }
+
+  /* Sequence */
+  ol.flow { list-style: none; counter-reset: step; padding: 0; margin: 0; }
+  ol.flow li {
+    counter-increment: step; position: relative; padding: 18px 18px 18px 66px;
+    background: var(--panel); border: 1px solid var(--border); border-radius: 12px; margin-bottom: 12px;
+  }
+  ol.flow li::before {
+    content: counter(step); position: absolute; left: 16px; top: 16px;
+    width: 34px; height: 34px; border-radius: 50%;
+    background: rgba(94,200,205,0.12); color: var(--link);
+    font-weight: 700; font-size: 15px; display: flex; align-items: center; justify-content: center;
+    border: 1px solid rgba(94,200,205,0.4);
+  }
+  ol.flow li.deny::before { background: rgba(240,119,107,0.12); color: var(--danger); border-color: rgba(240,119,107,0.4); }
+  ol.flow li .st { color: var(--title); font-weight: 600; font-size: 16px; display: block; margin-bottom: 3px; }
+  ol.flow li .sd { color: var(--muted); font-size: 14px; }
+  ol.flow li.deny .st { color: var(--danger); }
+
+  /* Philosophy */
+  .philosophy {
+    background: linear-gradient(180deg, rgba(126,226,168,0.05), transparent);
+    border: 1px solid var(--border); border-left: 3px solid var(--ok);
+    border-radius: 14px; padding: 28px 30px; margin-top: 24px;
+  }
+  .philosophy p { color: var(--title); font-size: 17px; margin: 0; }
+  .philosophy p + p { margin-top: 16px; color: var(--muted); font-size: 15px; }
+
+  .boundary-note {
+    margin-top: 22px; padding: 16px 18px; border-radius: 12px;
+    background: rgba(240,119,107,0.06); border: 1px solid rgba(240,119,107,0.28);
+    color: var(--muted); font-size: 14px;
+  }
+  .boundary-note b { color: var(--danger); }
+
+  footer { margin-top: 72px; padding-top: 24px; border-top: 1px solid var(--border); color: var(--muted); font-size: 13px; }
+
+  @media (max-width: 720px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .hero { padding: 60px 20px 40px; }
+  }
+</style>
+</head>
+<body>
+
+  <header class="hero">
+    <div class="hero-inner">
+      <p class="kicker">Hello Galaxy &#183; grant-keyed data access</p>
+      <h1>Grant-keyed encryption &mdash;<br><span class="accent">data access control that travels with the data</span></h1>
+      <p class="thesis">The owner grants who may read a stream. A key service turns that grant into cryptography. From then on the access control rides inside the ciphertext itself &mdash; no broker, no gatekeeper, nothing in the read path to decrypt on anyone's behalf.</p>
+    </div>
+  </header>
+
+  <div class="cards">
+    <div class="card"><div class="num">1</div><div class="lbl">DEK per generation &mdash; one AES-256-GCM key seals the payload</div></div>
+    <div class="card"><div class="num ok">N</div><div class="lbl">wrapped copies &mdash; the DEK re-wrapped once per member</div></div>
+    <div class="card"><div class="num link">0</div><div class="lbl">decryptors in the read path &mdash; the crypto is the cut</div></div>
+    <div class="card"><div class="num small">topic</div><div class="lbl">granular &amp; brokerless &mdash; per release-set stream</div></div>
+  </div>
+
+  <div class="wrap">
+
+    <section>
+      <h2>The core idea</h2>
+      <div class="lede">Seal the payload once; hand out the key privately, one recipient at a time.</div>
+      <p>Encrypting a stream separately for every reader would be wasteful and would leak the audience size into every message. Instead the payload is sealed <strong>once</strong> with a single symmetric data key (the DEK). That one DEK is then <strong>wrapped</strong> &mdash; encrypted &mdash; separately to each authorized member's public key. Everyone on the mesh receives the same signed bundle of wrapped copies, but a given member can only unwrap the one slot that was sealed to their key.</p>
+      <figure>
+        <div class="fig-scroll"><img src="figures/envelope-hybrid.svg" alt="Hybrid envelope: one DEK seals the payload, then the DEK is wrapped once per member into slots A, B, C."></div>
+        <figcaption><b>The hybrid envelope.</b> Layer one seals the message with the DEK (AAD binds suite, release-set, generation and topic). Layer two wraps that same DEK to each member via ephemeral ECDH P-256 &#8594; HKDF &#8594; AES-GCM. The whole bundle is ECDSA P-256 signed.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Distribution</h2>
+      <div class="lede">The key service sits off the data path; everyone gets the bundle, only members hold a slot.</div>
+      <p>A per-site key service mints the DEK, wraps it per member, signs the bundle, and publishes it on <code>keys/&lt;release-set&gt;/&lt;generation&gt;</code>. It never sees message payloads and is not part of message delivery. Because the fabric is brokerless, the bundle is simply broadcast &mdash; an outsider receives the identical bytes and finds no slot addressed to their key.</p>
+      <figure>
+        <div class="fig-scroll"><img src="figures/key-distribution.svg" alt="Key service off the data path publishes a signed bundle to the key topic; members unwrap their slot, an outsider receives it but has no slot."></div>
+        <figcaption><b>Key distribution.</b> The bundle reaches every peer over the Zenoh fabric. Members A and B unwrap their slots back to the DEK; the outsider receives the same broadcast but has no slot to open.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Production &amp; the read cut</h2>
+      <div class="lede">The producer is itself a member; the read cut is crypto, not routing.</div>
+      <p>A producer holds no privileged position &mdash; it is a member of its own release-set. It fetches the bundle, unwraps its <strong>own</strong> slot to recover the DEK, seals each message, and publishes ciphertext on <code>data/&lt;release-set&gt;/&lt;topic&gt;</code>. A member consumer unwraps its slot to the same DEK and opens the message. An outsider receives byte-for-byte identical ciphertext and cannot open it. Nothing in the router decrypts &mdash; the boundary is enforced entirely by who can recover the key.</p>
+      <figure>
+        <div class="fig-scroll"><img src="figures/producer-as-member.svg" alt="Producer unwraps its own slot to get the DEK, seals messages, publishes ciphertext; member consumer opens it, outsider is denied."></div>
+        <figcaption><b>Producer as member.</b> Fetch bundle &#8594; unwrap own slot &#8594; DEK &#8594; seal &#8594; publish. The member opens; the outsider, holding the same ciphertext but no key, is shut out by the math.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Authority</h2>
+      <div class="lede">A grant names orgs; the resolver expands them into individual anchors.</div>
+      <p>Access starts as a <strong>grant</strong>: the data owner &mdash; an organization, acting through a nominated data-governance admin &mdash; shares a producer's release-set with another org. That grant is authority, not a key. A resolver expands each org into its <strong>member anchors</strong>, and the DEK is wrapped once to each anchor's public key. Keys are always <strong>per-individual</strong>: the organization is the grouping and authority unit, and never holds a shared key of its own.</p>
+      <figure>
+        <div class="fig-scroll"><img src="figures/grant-to-audience.svg" alt="A grant from Org A to release-set K resolves into member anchors; org expands to individuals, producer is its own member; org is not a shared key."></div>
+        <figcaption><b>Grant to audience.</b> Org K expands to producer K (its own member); Org A expands to A-alice, A-bob, A-node7&#8230; Each anchor is one public key and gets one wrapped slot. Affiliation groups people; it is never a key.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>Revocation</h2>
+      <div class="lede">To revoke is to rotate: the next generation simply omits the member.</div>
+      <p>There is no key to claw back. Removing a member means the <strong>next</strong> generation's bundle is minted with a fresh DEK and wrapped only to the remaining members. The removed member keeps whatever prior-generation ciphertext it already holds &mdash; you cannot un-send bytes &mdash; but it is wrapped no new key and can open nothing going forward.</p>
+      <figure>
+        <div class="fig-scroll"><img src="figures/revocation-rotation.svg" alt="Generation N wraps to slots a, b, c; revoking c produces generation N+1 wrapping only a and b; c still opens N but not N+1."></div>
+        <figcaption><b>Revocation is rotation.</b> Generation N wraps to {a, b, c}. Revoke c &#8594; generation N+1 wraps a fresh DEK to {a, b} only. c can still open the gen-N bytes it already received; it can open nothing new.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>The boundary</h2>
+      <div class="lede">Two planes, one honest scope.</div>
+      <p>Machines hold their own keypairs, unwrap directly, and open ciphertext &mdash; their access is <strong>topic-granular</strong>, per release-set. Browser-only humans hold no key; they read through a mediated human-plane surface that is a member on their behalf, and they are held accountable by audit rather than by a key at the edge.</p>
+      <figure>
+        <div class="fig-scroll"><img src="figures/two-planes-boundary.svg" alt="Machine plane holds keys and reads topic-granular; human plane holds no key and reads through a mediated surface."></div>
+        <figcaption><b>Two planes.</b> The machine plane decrypts directly at topic granularity. The human plane never touches a key. The crypto cut reaches the stream, not the field or the row &mdash; and that limit is stated plainly, not papered over.</figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>End to end</h2>
+      <div class="lede">How a restricted stream flows, start to finish.</div>
+      <ol class="flow">
+        <li><span class="st">The owner grants</span><span class="sd">An organization, through its data-governance admin, shares a producer's release-set with another org. The grant is recorded as authority &mdash; who may read.</span></li>
+        <li><span class="st">The key service wraps, signs, and publishes</span><span class="sd">It resolves the grant into member anchors, mints one DEK for this generation, wraps it to each anchor's public key, ECDSA-signs the bundle, and publishes it on <code>keys/&lt;rs&gt;/&lt;gen&gt;</code>.</span></li>
+        <li><span class="st">The producer seals</span><span class="sd">As a member, the producer unwraps its own slot to the DEK, AES-256-GCM-seals each message with suite, release-set, generation and topic bound as AAD, and publishes ciphertext on <code>data/&lt;rs&gt;/&lt;topic&gt;</code>.</span></li>
+        <li><span class="st">Members open</span><span class="sd">Each authorized member unwraps its slot to the same DEK and decrypts the payload. Every peer received the same bundle and the same ciphertext.</span></li>
+        <li class="deny"><span class="st">Outsiders are denied &mdash; by the math</span><span class="sd">A non-member receives byte-identical ciphertext and a bundle with no slot addressed to it. There is no key to recover, so there is nothing to open. No router or broker had to refuse anything.</span></li>
+        <li><span class="st">Revoking rotates the generation</span><span class="sd">Remove a member and the next generation's bundle excludes it. It keeps the old bytes it already held; it is wrapped no new key. Access control moves forward with the data.</span></li>
+      </ol>
+    </section>
+
+    <section>
+      <h2>The philosophy</h2>
+      <div class="philosophy">
+        <p>Access control that lives in a gate stops at the gate. Grant-keyed encryption instead binds the control to the data: the owner decides who may read, and that decision is realized as cryptography that every copy of the ciphertext carries with it &mdash; across a brokerless fabric with no central component to trust, subvert, or overload in the read path.</p>
+        <p>Keys are per-individual, so the organization is the unit of <em>authority</em> and never a shared secret. Denial is not an event a server logs and enforces; it is the plain absence of a key. And accountability comes from audit of who was granted and who unwrapped &mdash; readers are <strong>accountable, not merely gated</strong>. The scope is stated honestly: this reaches topic granularity, and where a human holds no key, a mediated surface reads on their behalf.</p>
+      </div>
+      <div class="boundary-note"><b>Honest boundary.</b> Grant-keyed encryption controls who can decrypt a release-set's stream. It does not by itself perform field- or row-level selection within a stream, and browser-only humans read through a mediated surface rather than holding a key. Those are separate, complementary concerns &mdash; not claims this mechanism makes.</div>
+    </section>
+
+    <footer>
+      Hello Galaxy &#183; a teaching walkthrough of grant-keyed / supplemental data-access encryption on a brokerless pub/sub fabric. Figures are hand-authored SVG; this page is self-contained.
+    </footer>
+
+  </div>
+</body>
+</html>

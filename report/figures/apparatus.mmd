@@ -1,0 +1,28 @@
+flowchart TD
+    owner["<b>Data owner</b><br/>goat access grant<br/>“share K with org A”"]
+
+    subgraph KS["Key service · off the data path"]
+        direction LR
+        d1["derive audience<br/>from the grant"] --> d2["mint 1 DEK<br/>for (K, gen)"]
+        d2 --> d3["wrap DEK to each<br/>member's key"] --> d4["sign the bundle"]
+    end
+
+    bundle[/"keys/K/&lt;gen&gt; — signed bundle<br/>everyone receives it;<br/>only a member opens a slot"/]
+    prod["<b>Producer</b> · a member of K<br/>unwrap OWN slot → DEK<br/>seal each message"]
+    data[/"data/K/&lt;topic&gt;<br/>ciphertext"/]
+    member["<b>Member</b><br/>unwrap → open ✓"]
+    outsider["<b>Outsider</b><br/>same bytes → ✗"]
+
+    owner --> KS
+    KS -->|publish| bundle
+    bundle -->|"fetch, unwrap own slot"| prod
+    prod --> data
+    data --> member
+    data --> outsider
+
+    classDef anchor fill:#2a2113,stroke:#f5b14c,color:#e6edf3;
+    classDef ok fill:#12291d,stroke:#7ee2a8,color:#e6edf3;
+    classDef deny fill:#2a1416,stroke:#f0776b,color:#e6edf3;
+    class owner,prod anchor;
+    class member ok;
+    class outsider deny;

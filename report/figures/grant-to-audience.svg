@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 440" width="720" height="440" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif">
+  <rect width="720" height="440" fill="#0d1117"/>
+
+  <text x="36" y="46" fill="#e6edf3" font-size="22" font-weight="600">From grant to audience: orgs expand to member anchors</text>
+  <text x="36" y="72" fill="#9aa7b4" font-size="14">A grant is authority. Keys wrap to individuals &#8212; the org is the grouping, never a shared key.</text>
+
+  <!-- Grant -->
+  <rect x="36" y="118" width="230" height="104" rx="12" fill="#161b22" stroke="#7ee2a8" stroke-width="1.8"/>
+  <text x="52" y="146" fill="#7ee2a8" font-size="13" font-weight="600" letter-spacing="0.5">GRANT</text>
+  <text x="52" y="172" fill="#e6edf3" font-size="15" font-weight="600">Org A &#8592; release-set K</text>
+  <text x="52" y="194" fill="#9aa7b4" font-size="12">owner (Org K, via gov admin)</text>
+  <text x="52" y="212" fill="#9aa7b4" font-size="12">shares producer K's stream to Org A</text>
+
+  <!-- arrow resolve -->
+  <path d="M 266 170 C 312 170, 312 200, 356 200" stroke="#5ec8cd" stroke-width="1.8" fill="none" marker-end="url(#ah)"/>
+  <text x="270" y="160" fill="#9aa7b4" font-size="11.5">resolve audience</text>
+
+  <!-- Audience set -->
+  <rect x="356" y="110" width="328" height="230" rx="12" fill="none" stroke="#5ec8cd" stroke-width="1.5"/>
+  <text x="374" y="138" fill="#5ec8cd" font-size="13" font-weight="600" letter-spacing="0.5">MEMBER ANCHOR SET (WHAT THE DEK WRAPS TO)</text>
+
+  <!-- Org K expands to producer-as-member -->
+  <text x="374" y="166" fill="#f5b14c" font-size="12.5" font-weight="600">Org K &#8594; producer K (own member)</text>
+  <g>
+    <rect x="374" y="176" width="140" height="30" rx="6" fill="#161b22" stroke="#f5b14c" stroke-width="1.2"/>
+    <text x="388" y="196" fill="#f5b14c" font-size="12">anchor: producer K</text>
+  </g>
+
+  <!-- Org A expands to its members -->
+  <text x="374" y="232" fill="#7ee2a8" font-size="12.5" font-weight="600">Org A &#8594; its member anchors</text>
+  <g font-size="12">
+    <rect x="374" y="242" width="130" height="28" rx="6" fill="#161b22" stroke="#7ee2a8" stroke-width="1.2"/>
+    <text x="388" y="260" fill="#7ee2a8">anchor: A-alice</text>
+    <rect x="516" y="242" width="130" height="28" rx="6" fill="#161b22" stroke="#7ee2a8" stroke-width="1.2"/>
+    <text x="530" y="260" fill="#7ee2a8">anchor: A-bob</text>
+    <rect x="374" y="278" width="130" height="28" rx="6" fill="#161b22" stroke="#7ee2a8" stroke-width="1.2"/>
+    <text x="388" y="296" fill="#7ee2a8">anchor: A-node7</text>
+    <rect x="516" y="278" width="130" height="28" rx="6" fill="#161b22" stroke="#7ee2a8" stroke-width="1.2"/>
+    <text x="530" y="296" fill="#9aa7b4">&#8230; per-individual</text>
+  </g>
+
+  <text x="374" y="328" fill="#9aa7b4" font-size="11.5">each anchor = one public key &#8594; its own wrapped slot in the bundle</text>
+
+  <!-- affiliation not a key note -->
+  <rect x="36" y="256" width="230" height="84" rx="10" fill="#161b22" stroke="#f0776b" stroke-width="1.4"/>
+  <text x="52" y="282" fill="#f0776b" font-size="12.5" font-weight="600">NOT a shared org key</text>
+  <text x="52" y="304" fill="#9aa7b4" font-size="12">the organization never holds a key;</text>
+  <text x="52" y="322" fill="#9aa7b4" font-size="12">it is the authority + grouping unit only</text>
+
+  <text x="36" y="410" fill="#e6edf3" font-size="13" font-weight="600">The grant sets who; the resolver expands orgs into individual anchors; the DEK is wrapped once per anchor.</text>
+  <text x="36" y="430" fill="#9aa7b4" font-size="12">Add or remove a member of Org A &#8594; the next generation's anchor set changes accordingly.</text>
+
+  <defs>
+    <marker id="ah" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L9,4.5 L0,9 Z" fill="#5ec8cd"/>
+    </marker>
+  </defs>
+</svg>

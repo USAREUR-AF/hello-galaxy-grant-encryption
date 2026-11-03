@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+# grant-enc — the demo dispatcher.
+#
+#   bin/grant-enc list                 show the scenarios
+#   bin/grant-enc all                  run them all in order
+#   bin/grant-enc 03                   run one (by number, name, or suffix)
+#   bin/grant-enc 03 --fabric          run 03 over a real eclipse/zenoh router
+#
+# Each scenario is a narrated Python walkthrough under scenarios/NN/; read its
+# README.md first — the script is the proof companion, not the lesson.
+set -euo pipefail
+# shellcheck source=lib/gehg.sh
+source "$(cd "$(dirname "${BASH_SOURCE[0]}")/../lib" && pwd)/gehg.sh"
+
+cmd="${1:-list}"
+case "$cmd" in
+  list|-h|--help|help) list ;;
+  all) preflight; banner "grant-keyed encryption — full walkthrough"; run_all ;;
+  *)   preflight; run_one "$cmd" "${@:2}" ;;
+esac

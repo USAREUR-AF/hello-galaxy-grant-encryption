@@ -1,0 +1,19 @@
+# A single local eclipse/zenoh router for the `--fabric` demo path.
+#   docker compose -f local-fabric/docker-compose.yml up -d
+#   pip install eclipse-zenoh
+#   ./bin/grant-enc 03 --fabric
+#   docker compose -f local-fabric/docker-compose.yml down
+#
+# This is a throwaway loopback router (plaintext, open) to prove the crypto's
+# bytes survive a real Zenoh transport. It is NOT the production fabric (which is
+# mTLS + per-identity ACL); the read cut here is the crypto, not the router.
+services:
+  zenoh:
+    image: eclipse/zenoh:1.9.0
+    container_name: hg-grant-enc-zenoh
+    command: ["-c", "/etc/zenoh/zenohd.json5"]
+    ports:
+      - "127.0.0.1:7447:7447"
+    volumes:
+      - ./zenohd.json5:/etc/zenoh/zenohd.json5:ro
+    restart: unless-stopped
