@@ -25,7 +25,9 @@ This repo is self-contained. The crypto is a readable reference implementation y
 | `./bin/fetch-sdk.sh` then `./bin/grant-enc all` | Rust ≥ 1.77 + git | the endpoint crypto on the production grant-crypto SDK, built from [`goatcore`](https://github.com/usareur-af/goatcore) |
 | [`docs/goat-cli-path.md`](docs/goat-cli-path.md) | a goatnet | the same flows from the `goat` CLI, against a portal, key service and SPIRE trust root |
 
-The first three run on a laptop and in this repo's CI. The last needs a goatnet; if you don't have one, the goatlite tutorial stands one up on a single box: [`docs/tutorials/00-goatlite.md`](https://github.com/usareur-af/goatcore/blob/main/docs/tutorials/00-goatlite.md) in goatcore.
+The first three run on a laptop and in this repo's CI. The last needs a goatnet you have access to, running the portal, the key service and a SPIRE trust root. That can be
+EFDI, the shared sandbox goatnet that partners are onboarded to (if you are onboarded to it); <!-- oss-allow: operator-approved public example goatnet -->
+a goatlite you stand up yourself on a single box ([`docs/tutorials/00-goatlite.md`](https://github.com/usareur-af/goatcore/blob/main/docs/tutorials/00-goatlite.md) in goatcore); or another goatnet you have access to.
 
 ---
 
@@ -57,7 +59,7 @@ The short version: **you** bring an identity + keys, and you make a grant. The *
 
 **Your identity + keypair** — a certificate and a private key **only you hold**; it *is* your member id and the key you unwrap data keys with. The mesh mints the cert at onboarding, but the private key never leaves you. (The *public* cert is also published to the portal's recipient-cert store at mint, which is how the key service can wrap data keys to you with no manual step — see [`docs/data-owner-controls.md`](docs/data-owner-controls.md).)
 - *Looks like:* a `.cbor` enrollment bundle → `~/.goat/contexts/<net>/mtls.cert.pem` + `mtls.key.pem` (plus a `portal.token`)
-- *In this repo:* `grant_enc.Identity` &nbsp;·&nbsp; *learn:* your goatnet's onboarding ([`hello-galaxy-human-machine-onboarding`](https://github.com/usareur-af/hello-galaxy-human-machine-onboarding)), SPIFFE/SVID
+- *In this repo:* `grant_enc.Identity` &nbsp;·&nbsp; *learn:* the goatnet's onboarding ([`hello-galaxy-human-machine-onboarding`](https://github.com/usareur-af/hello-galaxy-human-machine-onboarding)), SPIFFE/SVID
 
 **The grant** *(the decision)* — as your org's **data-governance admin**, you record "share producer K with org A." One line; the platform records it, it doesn't second-guess it.
 - *Looks like:* `goat access grant <producer> <org>` — the `goat` CLI calling the portal
@@ -67,7 +69,7 @@ The short version: **you** bring an identity + keys, and you make a grant. The *
 - *Looks like:* the **grant-crypto SDK** — the audited Rust core behind a versioned C ABI, with thin Go / Python / TS bindings ([ADR 1106](https://github.com/usareur-af/goatcore/blob/main/docs/adr/1106-grant-crypto-sdk-and-endpoint-forward-secrecy.md); source in goatcore at `ops/grant-crypto/sdk/`)
 - *In this repo:* [`lib/grant_enc.py`](lib/grant_enc.py) is the readable reference; run [`bin/fetch-sdk.sh`](bin/fetch-sdk.sh) and the scenarios seal/open on the **real SDK** instead &nbsp;·&nbsp; *learn:* [`docs/envelope-and-keys.md`](docs/envelope-and-keys.md)
 
-**The `goat` CLI** — the one tool to enroll, grant/revoke, and publish/subscribe; you download the build for your goatnet.
+**The `goat` CLI** — the one tool to enroll, grant/revoke, and publish/subscribe; you download the build for the goatnet you are using.
 - *In this repo:* the demo calls the crypto library directly (the reference, or the SDK once fetched), so you can read every step.
 
 ### Runs in the private mesh, at a service location (you just use it)

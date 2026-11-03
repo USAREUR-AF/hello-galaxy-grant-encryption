@@ -29,8 +29,8 @@ ships it, the CLI drives it — one mechanism, three altitudes.
 > reachable key service and portal, and a SPIRE trust root to verify bundle signers against. None of
 > that exists in a bare clone or in this repo's CI, so **nothing below is run here** — the commands are
 > real `goat` surface (as goatcore's `crates/goat-cli` implements it), shown as an annotated sequence.
-> If you don't have a goatnet, goatcore's goatlite tutorial (`docs/tutorials/00-goatlite.md`) stands
-> one up on a single box. Where a scenario's crypto is genuinely exercised, that happens on the reference or the SDK,
+> The goatnet can be EFDI if you are onboarded to it, a goatlite you stand up yourself (goatcore's <!-- oss-allow: operator-approved public example goatnet -->
+> `docs/tutorials/00-goatlite.md`), or another goatnet you have access to. Where a scenario's crypto is genuinely exercised, that happens on the reference or the SDK,
 > not here.
 
 ---
@@ -230,7 +230,7 @@ $ goat profile init <bundle.cbor>   # verify the offline-CA-signed bundle, write
 $ goat doctor                        # am I on the mesh, is the router + portal reachable, is my cert accepted?
 ```
 
-The mesh download and the enrollment bundle come from your goatnet's **onboarding** — a sibling Hello
+The mesh download and the enrollment bundle come from the goatnet's **onboarding** — a sibling Hello
 Galaxy repo — which is also where you get the NetBird enrollment that puts you on the mesh in the first
 place. Everything on this page assumes that has already happened.
 

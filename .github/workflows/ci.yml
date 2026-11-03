@@ -5,7 +5,8 @@ name: ci
 # fails the build. The default in-process path on the readable reference is the
 # always-on gate. The production-SDK path (bin/fetch-sdk.sh builds the SDK from
 # goatcore's ops/grant-crypto/sdk) runs in its own job and adds the cross-library
-# wire check. The --fabric path (docker + eclipse-zenoh) is not run here.
+# wire check. The --fabric job carries scenario 03 over a real eclipse/zenoh router
+# (local-fabric/) and fails if the run fell back to the in-process bus.
 
 on:
   push:
@@ -76,3 +77,51 @@ jobs:
           NO_COLOR=1 ./bin/grant-enc all | tee walkthrough.log
           grep -q 'backend: grant-crypto SDK' walkthrough.log
           python3 tests/cross_compat.py
+
+  fabric:
+    # Scenario 03 over a real eclipse/zenoh 1.9 router (local-fabric/docker-compose.yml).
+    # Fails if eclipse-zenoh could not connect and the scenario fell back to the
+    # in-process bus, and checks the router's keys/** storage really holds the bundle.
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install cryptography eclipse-zenoh==1.9.0
+      - name: start the local router
+        run: docker compose -f local-fabric/docker-compose.yml up -d
+      - name: wait until a client session reaches the router
+        run: |
+          for _ in $(seq 1 30); do
+            if python3 -c 'import json, zenoh; zenoh.open(zenoh.Config.from_json5(json.dumps({"mode": "client", "connect": {"endpoints": ["tcp/127.0.0.1:7447"]}, "scouting": {"multicast": {"enabled": False}}}))).close()' 2>/dev/null; then
+              echo "router reachable"; exit 0
+            fi
+            sleep 2
+          done
+          echo "router never became reachable"; exit 1
+      - name: run scenario 03 over the router
+        run: |
+          NO_COLOR=1 ./bin/grant-enc 03 --fabric | tee fabric.log
+          if grep -q 'using the in-process bus' fabric.log; then
+            echo "scenario 03 fell back to the in-process bus"; exit 1
+          fi
+      - name: the router retained the key bundle
+        run: |
+          python3 - <<'PY'
+          import json, sys, zenoh
+          cfg = {"mode": "client", "connect": {"endpoints": ["tcp/127.0.0.1:7447"]},
+                 "scouting": {"multicast": {"enabled": False}}}
+          s = zenoh.open(zenoh.Config.from_json5(json.dumps(cfg)))
+          keys = [str(r.ok.key_expr) for r in s.get("keys/**") if r.ok is not None]
+          s.close()
+          print("retained:", keys)
+          sys.exit(0 if keys else 1)
+          PY
+      - name: router log
+        if: always()
+        run: docker compose -f local-fabric/docker-compose.yml logs --tail=60
+      - name: stop the router
+        if: always()
+        run: docker compose -f local-fabric/docker-compose.yml down

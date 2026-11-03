@@ -9,6 +9,9 @@
   mode: "router",
   listen: { endpoints: ["tcp/0.0.0.0:7447"] },
   scouting: { multicast: { enabled: false } },
+  // The storage manager ships as a plugin library in the eclipse/zenoh image; without
+  // plugins_loading the router never declares the keys/** storage and a late get() is empty.
+  plugins_loading: { enabled: true, search_dirs: ["/", "/opt/zenoh/plugins"] },
   plugins: {
     storage_manager: {
       storages: {
