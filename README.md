@@ -194,3 +194,7 @@ And it is **coarse-but-brokerless by choice**: the network keeps routing ciphert
 ---
 
 *Part of the Hello Galaxy series — self-contained, runnable, best-practice demonstrations of how the goat fabric works. The design lives in [`goatcore`](https://github.com/usareur-af/goatcore): grant-keyed encryption ([ADR 1094](https://github.com/usareur-af/goatcore/blob/main/docs/adr/1094-grant-keyed-payload-encryption.md), [ADR 1102](https://github.com/usareur-af/goatcore/blob/main/docs/adr/1102-organization-owned-data-sharing.md)) and the grant-crypto SDK ([ADR 1106](https://github.com/usareur-af/goatcore/blob/main/docs/adr/1106-grant-crypto-sdk-and-endpoint-forward-secrecy.md), [`grant-crypto-sdk.md`](https://github.com/usareur-af/goatcore/blob/main/docs/design/grant-crypto-sdk.md)); this repo is the shown-not-told companion.*
+
+## Licence
+
+`hello-galaxy-grant-encryption` was written by U.S. Federal government employees. In the U.S. it is not subject to copyright and is in the public domain; in countries where copyright is recognized, it is released under the [Apache License 2.0](LICENSE). See [INTENT.md](INTENT.md).
