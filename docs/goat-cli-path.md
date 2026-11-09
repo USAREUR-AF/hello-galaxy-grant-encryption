@@ -29,7 +29,7 @@ ships it, the CLI drives it — one mechanism, three altitudes.
 > reachable key service and portal, and a SPIRE trust root to verify bundle signers against. None of
 > that exists in a bare clone or in this repo's CI, so **nothing below is run here** — the commands are
 > real `goat` surface (as goatcore's `crates/goat-cli` implements it), shown as an annotated sequence.
-> The goatnet can be EFDI if you are onboarded to it, a goatlite you stand up yourself (goatcore's <!-- oss-allow: operator-approved public example goatnet -->
+> The goatnet can be a goatlite you stand up yourself (goatcore's
 > `docs/tutorials/00-goatlite.md`), or another goatnet you have access to. Where a scenario's crypto is genuinely exercised, that happens on the reference or the SDK,
 > not here.
 

@@ -26,7 +26,6 @@ This repo is self-contained. The crypto is a readable reference implementation y
 | [`docs/goat-cli-path.md`](docs/goat-cli-path.md) | a goatnet | the same flows from the `goat` CLI, against a portal, key service and SPIRE trust root |
 
 The first three run on a laptop and in this repo's CI. The last needs a goatnet you have access to, running the portal, the key service and a SPIRE trust root. That can be
-EFDI, the shared sandbox goatnet that partners are onboarded to (if you are onboarded to it); <!-- oss-allow: operator-approved public example goatnet -->
 a goatlite you stand up yourself on a single box ([`docs/tutorials/00-goatlite.md`](https://github.com/usareur-af/goatcore/blob/main/docs/tutorials/00-goatlite.md) in goatcore); or another goatnet you have access to.
 
 ---
