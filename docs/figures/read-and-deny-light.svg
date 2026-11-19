@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 880 466" width="880" height="466" role="img" aria-labelledby="t d" font-family="-apple-system, BlinkMacSystemFont, &apos;Segoe UI&apos;, &apos;Noto Sans&apos;, Helvetica, Arial, sans-serif">
+<title id="t">An outsider receives the same bytes and cannot open them</title>
+<desc id="d">Scenario 03: the data owner grants the weather-feed stream to org northwind; the key service, off the data path, mints one data key, wraps it to each member and publishes the signed bundle; the producer unwraps its own slot and publishes ciphertext; the Zenoh fabric delivers the same bytes to every subscriber; the northwind consumer opens the message and outsider/eve, an enrolled identity outside the audience, is denied because it holds no slot.</desc>
+<defs><marker id="arrow-line" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#818b98"/></marker><marker id="arrow-accent" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#0969da"/></marker><marker id="arrow-good" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#1a7f37"/></marker><marker id="arrow-crit" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0,0L10,5L0,10z" fill="#cf222e"/></marker></defs>
+<rect width="100%" height="100%" rx="12" fill="#ffffff"/>
+<text x="24" y="38" font-size="20" fill="#1f2328" text-anchor="start" font-weight="600">An outsider receives the same bytes and cannot open them</text>
+<text x="24" y="62" font-size="14" fill="#59636e" text-anchor="start">Scenario 03 as it runs: the read check is the encryption, not the router.</text>
+<rect x="24" y="88" width="200" height="120" rx="8" fill="#f6f8fa" stroke="#d1d9e0" stroke-width="1.5"/>
+<text x="38" y="114" font-size="15" fill="#1f2328" text-anchor="start" font-weight="600">Data owner</text>
+<text x="38" y="138" font-size="14" fill="#1f2328" text-anchor="start">goat access grant:</text>
+<text x="38" y="158" font-size="14" fill="#1f2328" text-anchor="start">weather-feed</text>
+<text x="38" y="178" font-size="14" fill="#1f2328" text-anchor="start">to org northwind</text>
+<rect x="248" y="88" width="300" height="120" rx="8" fill="#ddf4ff" stroke="#0969da" stroke-width="1.5"/>
+<text x="262" y="114" font-size="15" fill="#1f2328" text-anchor="start" font-weight="600">Key service</text>
+<text x="262" y="138" font-size="14" fill="#1f2328" text-anchor="start">off the data path: derives the audience</text>
+<text x="262" y="158" font-size="14" fill="#1f2328" text-anchor="start">from the grant, mints one data key,</text>
+<text x="262" y="178" font-size="14" fill="#1f2328" text-anchor="start">wraps it to each member, then signs the</text>
+<text x="262" y="198" font-size="14" fill="#1f2328" text-anchor="start">key bundle</text>
+<rect x="572" y="88" width="284" height="120" rx="8" fill="#f6f8fa" stroke="#d1d9e0" stroke-width="1.5"/>
+<text x="586" y="114" font-size="15" fill="#1f2328" text-anchor="start" font-weight="600">Producer, acme-sensors</text>
+<text x="586" y="138" font-size="14" fill="#1f2328" text-anchor="start">a member of its own audience: it</text>
+<text x="586" y="158" font-size="14" fill="#1f2328" text-anchor="start">unwraps its own slot, then seals</text>
+<text x="586" y="178" font-size="14" fill="#1f2328" text-anchor="start">every message</text>
+<line x1="224" y1="148" x2="246" y2="148" stroke="#818b98" stroke-width="1.5" marker-end="url(#arrow-line)"/>
+<rect x="24" y="262" width="832" height="32" rx="6" fill="#f6f8fa" stroke="#818b98" stroke-width="1.5"/>
+<text x="440" y="283" font-size="14" fill="#59636e" text-anchor="middle">Zenoh fabric: no broker, no decryptor; every subscriber receives the same bytes</text>
+<line x1="290" y1="208" x2="290" y2="260" stroke="#0969da" stroke-width="2" marker-end="url(#arrow-accent)"/>
+<text x="300" y="238" font-size="13" fill="#0969da" text-anchor="start" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">keys/weather-feed/prod/1</text>
+<line x1="600" y1="208" x2="600" y2="260" stroke="#818b98" stroke-width="2" marker-end="url(#arrow-line)"/>
+<text x="610" y="238" font-size="13" fill="#59636e" text-anchor="start" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">data/weather-feed/prod/obs</text>
+<line x1="227" y1="294" x2="227" y2="334" stroke="#1a7f37" stroke-width="2" marker-end="url(#arrow-good)"/>
+<line x1="653" y1="294" x2="653" y2="334" stroke="#cf222e" stroke-width="2" marker-end="url(#arrow-crit)"/>
+<rect x="24" y="336" width="406" height="88" rx="8" fill="#dafbe1" stroke="#1a7f37" stroke-width="1.5"/>
+<text x="38" y="362" font-size="15" fill="#1f2328" text-anchor="start" font-weight="600">Member, northwind consumer</text>
+<text x="38" y="386" font-size="14" fill="#1f2328" text-anchor="start">holds 1 key and unwraps its slot</text>
+<text x="38" y="406" font-size="13" fill="#1a7f37" text-anchor="start" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">opened gen 1: STATION 7: wind 040 at 12 kt</text>
+<rect x="450" y="336" width="406" height="88" rx="8" fill="#ffebe9" stroke="#cf222e" stroke-width="1.5"/>
+<text x="464" y="362" font-size="15" fill="#1f2328" text-anchor="start" font-weight="600">Outsider, outsider/eve</text>
+<text x="464" y="386" font-size="14" fill="#1f2328" text-anchor="start">enrolled on the fabric, not in the audience: 0 keys</text>
+<text x="464" y="406" font-size="13" fill="#cf222e" text-anchor="start" font-family="ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace">denied on gen 1: no slot</text>
+<text x="24" y="452" font-size="14" fill="#59636e" text-anchor="start">Run it yourself: ./bin/grant-enc 03</text>
+</svg>

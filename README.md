@@ -1,5 +1,10 @@
 # Hello Galaxy — grant-keyed encryption
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/figures/read-and-deny-dark.svg">
+  <img src="docs/figures/read-and-deny-light.svg" width="760" alt="Scenario 03: the data owner grants the weather-feed stream to org northwind; the key service, off the data path, wraps one data key to each member and publishes the signed bundle; the producer seals the stream; the Zenoh fabric delivers the same bytes to a northwind member, who opens them, and to outsider/eve, an enrolled identity outside the audience, who is denied.">
+</picture>
+
 **Data-access control that travels *with the data*, on a brokerless fabric, with nothing in the read path that can decrypt.**
 
 This is a teaching walkthrough. You read it, follow it, and run the proof at the end of each step. It answers one question completely:
